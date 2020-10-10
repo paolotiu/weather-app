@@ -9,10 +9,16 @@
     justify-content: space-around;
 }
 
-.container1 {
+.container1,
+.container2 {
     display: flex;
     flex-flow: column;
     flex-wrap: wrap;
+}
+
+.container2 {
+    justify-content: center;
+    align-items: center;
 }
 
 .error-container {
