@@ -4,8 +4,10 @@ import './App.css'
 import Today from './components/Today'
 import Header from './components/Header'
 import Forecast from './components/Forecast'
-import { geoApiKey, weatherApiKey } from './config'
 
+let geoApiKey = process.env.REACT_APP_GEO_API_KEY
+let weatherApiKey = process.env.REACT_APP_WEATHER_API_KEY
+// let weatherApiKey = process.env.REACT_APP_WEATHER_API_KEY
 //For date time
 ;(function () {
     var days = [
@@ -81,7 +83,6 @@ function App() {
                 country = json.results[0].components.continent
             }
 
-            console.log(city, country, json)
             let { lat, lng } = json.results[0].bounds.northeast
             let long = lng
             setLoading(true)
@@ -142,7 +143,6 @@ function App() {
                 `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&exclude=minutely&appid=${weatherApiKey}&units=${unit}`
             )
             let weatherJson = await weather.json()
-            console.log(weatherJson)
             return weatherJson
         }
 
