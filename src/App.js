@@ -3,6 +3,7 @@ import Switch from 'react-switch'
 import './App.css'
 import Today from './components/Today'
 import Header from './components/Header'
+import Forecast from './components/Forecast'
 import { geoApiKey, weatherApiKey } from './config'
 
 //For date time
@@ -165,6 +166,7 @@ function App() {
                     sunrise: new Date(v.current.sunrise * 1000),
                     sunset: new Date(v.current.sunset * 1000),
                 })
+                setForecast(v.daily)
             })
 
             setLoading(false)
@@ -209,7 +211,9 @@ function App() {
                     <Today unit={unit} weather={weather} loading={loading} />
                     <Today stats={stats} />
                 </div>
-                <div className="container2"></div>
+                <div className="container2">
+                    <Forecast forecast={forecast} unit={unit} />
+                </div>
             </div>
         </div>
     )
