@@ -41,7 +41,10 @@ import { geoApiKey, weatherApiKey } from './config'
 })()
 
 function App() {
-    const [checked, setChecked] = useState(true)
+    const [stats, setStats] = useState({
+        humidty: 0,
+    })
+    const [forecast, setForecast] = useState()
     const [unit, setUnit] = useState('metric')
     const [loading, setLoading] = useState(true)
     const [weather, setWeather] = useState({
@@ -156,6 +159,12 @@ function App() {
                     year: date.getUTCFullYear(),
                     time: date.toLocaleTimeString('en-US'),
                 })
+                setStats({
+                    humidity: v.current.humidity,
+                    pressure: v.current.pressure,
+                    sunrise: new Date(v.current.sunrise * 1000),
+                    sunset: new Date(v.current.sunset * 1000),
+                })
             })
 
             setLoading(false)
@@ -192,12 +201,13 @@ function App() {
                     checked={unit === 'metric'}
                 />
                 <button className="here" onClick={getCurrentLatLong}>
-                    <span class="material-icons">location_on</span>
+                    <span className="material-icons">location_on</span>
                 </button>
             </div>
             <div className="content">
                 <div className="container1">
                     <Today unit={unit} weather={weather} loading={loading} />
+                    <Today stats={stats} />
                 </div>
                 <div className="container2"></div>
             </div>
