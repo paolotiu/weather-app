@@ -3,6 +3,7 @@ import Switch from 'react-switch'
 import './App.css'
 import Today from './components/Today'
 import Header from './components/Header'
+import { geoApiKey, weatherApiKey } from './config'
 
 //For date time
 ;(function () {
@@ -38,9 +39,6 @@ import Header from './components/Header'
         return days[this.getDay()]
     }
 })()
-
-const weatherApiKey = 'b3799facfb7756da884708a0ebd939aa'
-const geoApiKey = '10c8f176788f475ca28e8e9d145f320b'
 
 function App() {
     const [checked, setChecked] = useState(true)
