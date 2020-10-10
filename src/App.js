@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
+import Switch from 'react-switch'
 import './App.css'
 import Today from './components/Today'
 import Header from './components/Header'
@@ -42,6 +43,8 @@ const weatherApiKey = 'b3799facfb7756da884708a0ebd939aa'
 const geoApiKey = '10c8f176788f475ca28e8e9d145f320b'
 
 function App() {
+    const [checked, setChecked] = useState(true)
+    const [unit, setUnit] = useState('metric')
     const [loading, setLoading] = useState(true)
     const [weather, setWeather] = useState({
         temp: 0,
@@ -61,7 +64,6 @@ function App() {
                 `https://api.opencagedata.com/geocode/v1/json?q=${name}&key=${geoApiKey}`
             )
             let json = await res.json()
-
             let city = json.results[0].components.city
             let country = json.results[0].components.country
             let state = json.results[0].components.state
@@ -71,9 +73,13 @@ function App() {
 
             if (city && state && country) {
                 country = state
-            } else if (!city) {
+            } else if (!city && state) {
                 city = state
+            } else if (!state && !country) {
+                country = json.results[0].components.continent
             }
+
+            console.log(city, country, json)
             let { lat, lng } = json.results[0].bounds.northeast
             let long = lng
             setLoading(true)
@@ -88,34 +94,41 @@ function App() {
 
     //Sets the location state
     async function setLocationName(lat, long, city = '', country = '') {
-        let json = await fetch(
-            `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${long}&key=${geoApiKey}`
-        ).then((x) => x.json())
+        try {
+            let json = await fetch(
+                `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${long}&key=${geoApiKey}`
+            ).then((x) => x.json())
 
-        if (!country) {
-            city = json.results[0].components.city
-            country = json.results[0].components.country
+            if (!country) {
+                city = json.results[0].components.city
+                country = json.results[0].components.country
+            }
+
+            setLocation({ lat, long, city, country })
+        } catch (e) {
+            error.current.classList.add('show')
+            setTimeout(() => {
+                error.current.classList.remove('show')
+            }, 2000)
         }
+    }
 
-        setLocation({ lat, long, city, country })
+    // gets current lat and long and passes to setLocationName
+    async function getCurrentLatLong() {
+        let geo = await getCurrentLocation()
+
+        let lat = geo.coords.latitude
+        let long = geo.coords.longitude
+        setLocationName(lat, long)
+    }
+    //Get current latitude and longitude, returns a promise
+    function getCurrentLocation() {
+        return new Promise((res, rej) => {
+            navigator.geolocation.getCurrentPosition(res, rej)
+        })
     }
 
     useEffect(() => {
-        // gets current lat and long and passes to setLocationName
-        async function getCurrentLatLong() {
-            let geo = await getCurrentLocation()
-
-            let lat = geo.coords.latitude
-            let long = geo.coords.longitude
-            setLocationName(lat, long)
-        }
-        //Get current latitude and longitude, returns a promise
-        function getCurrentLocation() {
-            return new Promise((res, rej) => {
-                navigator.geolocation.getCurrentPosition(res, rej)
-            })
-        }
-
         getCurrentLatLong()
     }, [])
 
@@ -124,9 +137,10 @@ function App() {
         async function currentLocationWeather() {
             let { lat, long } = location
             let weather = await fetch(
-                `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&exclude=minutely&appid=${weatherApiKey}&units=metric`
+                `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&exclude=minutely&appid=${weatherApiKey}&units=${unit}`
             )
             let weatherJson = await weather.json()
+            console.log(weatherJson)
             return weatherJson
         }
 
@@ -137,6 +151,7 @@ function App() {
                     temp: v.current.temp,
                     feel: v.current.feels_like,
                     description: v.current.weather[0].description,
+                    main: v.current.weather[0].main,
                     day: date.getDayName(),
                     month: date.getMonthName(),
                     dayNum: date.getUTCDate(),
@@ -147,7 +162,7 @@ function App() {
 
             setLoading(false)
         }
-    }, [location])
+    }, [location, unit])
 
     let error = useRef()
     let search = useRef()
@@ -159,10 +174,30 @@ function App() {
                 city={location ? location.city : null}
                 country={location ? location.country : null}
             />
+            <div className="button-container">
+                <Switch
+                    className="switch"
+                    boxShadow="3px 3px 5px #c8c8c8"
+                    offColor="#f2f2f2"
+                    onColor="#f2f2f2"
+                    uncheckedIcon={<span className="switch-icon">°F</span>}
+                    checkedIcon={<span className="switch-icon">°C</span>}
+                    onChange={() =>
+                        unit === 'metric'
+                            ? setUnit('imperial')
+                            : setUnit('metric')
+                    }
+                    checked={unit === 'metric'}
+                />
+                <button className="here" onClick={getCurrentLatLong}>
+                    <span class="material-icons">location_on</span>
+                </button>
+            </div>
+
             <div ref={error} className="error-container">
                 <span className="error">Location Not Found</span>
             </div>
-            <Today weather={weather} loading={loading} />
+            <Today unit={unit} weather={weather} loading={loading} />
         </div>
     )
 }
