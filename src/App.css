@@ -1,3 +1,19 @@
+.App {
+    display: flex;
+    flex-flow: column;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container1 {
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+}
+
 .error-container {
     z-index: -1;
     margin: auto auto;
@@ -45,4 +61,10 @@
     margin-top: 4px;
     font-size: medium;
     color: #4f4f4f;
+}
+
+@media only screen and (max-width: 600px) {
+    .content {
+        flex-flow: column;
+    }
 }

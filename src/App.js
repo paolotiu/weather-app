@@ -174,6 +174,10 @@ function App() {
                 city={location ? location.city : null}
                 country={location ? location.country : null}
             />
+
+            <div ref={error} className="error-container">
+                <span className="error">Location Not Found</span>
+            </div>
             <div className="button-container">
                 <Switch
                     className="switch"
@@ -193,11 +197,12 @@ function App() {
                     <span class="material-icons">location_on</span>
                 </button>
             </div>
-
-            <div ref={error} className="error-container">
-                <span className="error">Location Not Found</span>
+            <div className="content">
+                <div className="container1">
+                    <Today unit={unit} weather={weather} loading={loading} />
+                </div>
+                <div className="container2"></div>
             </div>
-            <Today unit={unit} weather={weather} loading={loading} />
         </div>
     )
 }
