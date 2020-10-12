@@ -36,7 +36,7 @@
 }
 
 .search {
-    font: 'Op';
+    font-family: 'Open Sans', sans-serif;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }

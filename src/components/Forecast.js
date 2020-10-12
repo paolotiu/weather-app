@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './css/Forecast.css'
 
-let days = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-]
-
 const Forecast = (props) => {
     const [symbol, setSymbol] = useState()
     useEffect(() => {

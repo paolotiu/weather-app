@@ -16,12 +16,17 @@
     flex-wrap: wrap;
 }
 
+.container1 {
+    margin-right: 50px;
+}
+
 .container2 {
     justify-content: center;
     align-items: center;
 }
 
 .error-container {
+    color: rgb(202, 78, 78);
     z-index: -1;
     margin: auto auto;
     text-align: center;
@@ -73,5 +78,9 @@
 @media only screen and (max-width: 600px) {
     .content {
         flex-flow: column;
+    }
+
+    .container1 {
+        margin-right: 0;
     }
 }
